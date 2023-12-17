@@ -10,7 +10,7 @@ import { MdDelete } from "react-icons/md";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
 
-const API_URL = "https://todo-server-jzvro0sw0-shailja026.vercel.app/tasks";
+const API_URL = "https://todo-server-4sfst3cmf-shailja026.vercel.app/tasks";
 
 function Todos() {
   const [newTask, setNewTask] = useState("");
@@ -19,8 +19,13 @@ function Todos() {
   const [editedTaskTitle, setEditedTaskTitle] = useState("");
   const [open, setOpen] = useState(true);
   useEffect(() => {
-    axios
-      .get(API_URL)
+    axios(API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    })
       .then((response) => {
         setTasks(response.data);
         console.log(response.data);
@@ -31,21 +36,19 @@ function Todos() {
   }, []);
 
   // saving tasks to local storage================================================================
-  useEffect(()=>{
-  localStorage.setItem("tasks" , JSON.stringify(tasks)); 
-  },[tasks])
-
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   // // getting data from local storage================================================================
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     const data = JSON.parse(localStorage.getItem("tasks"));
     console.log(data);
-    if(data){
+    if (data) {
       setTasks(data);
     }
-
-  },[])
+  }, []);
 
   // adding new lists in todos list================================================================
   const addTask = async () => {
@@ -80,10 +83,7 @@ function Todos() {
     try {
       const updatedTasks = await tasks.map((task, i) => {
         if (task?.id === listId) {
-          
-          
           return { ...task, completed: !task.completed };
-         
         } else {
           return task;
         }
@@ -93,9 +93,8 @@ function Todos() {
 
       const response = await axios.patch(`${API_URL}/${listId}`, {
         completed: updatedTasks.find((task) => task?.id === listId).completed,
-        
       });
-      alert('Task completed');
+      alert("Task completed");
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -118,12 +117,12 @@ function Todos() {
           return task;
         }
       });
-       await axios.patch(`${API_URL}/${taskId}`, {
+      await axios.patch(`${API_URL}/${taskId}`, {
         title: newUpdatedtask.find((task) => task.id === taskId).title,
       });
 
       setTasks(newUpdatedtask);
-      console.log(newUpdatedtask)
+      console.log(newUpdatedtask);
       setEditedTaskId(null);
       setEditedTaskTitle("");
     } catch (err) {
