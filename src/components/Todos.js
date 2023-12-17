@@ -10,7 +10,8 @@ import { MdDelete } from "react-icons/md";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
 
-const API_URL = "https://todo-server-4sfst3cmf-shailja026.vercel.app/tasks";
+const API_URL = "https://todo-server-beige.vercel.app/tasks";
+
 
 function Todos() {
   const [newTask, setNewTask] = useState("");
