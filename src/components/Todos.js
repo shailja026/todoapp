@@ -10,7 +10,7 @@ import { MdDelete } from "react-icons/md";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { MdEditSquare } from "react-icons/md";
 
-const API_URL = "https://todo-server-beige.vercel.app/tasks";
+const API_URL = "https://todo-server-shailja026.vercel.app/tasks";
 
 
 function Todos() {
@@ -18,7 +18,7 @@ function Todos() {
   const [tasks, setTasks] = useState([]);
   const [editedTaskId, setEditedTaskId] = useState(null);
   const [editedTaskTitle, setEditedTaskTitle] = useState("");
-  const [open, setOpen] = useState(true);
+  
   useEffect(() => {
     axios(API_URL, {
       method: "GET",
@@ -39,6 +39,7 @@ function Todos() {
   // saving tasks to local storage================================================================
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    
   }, [tasks]);
 
   // // getting data from local storage================================================================
@@ -49,7 +50,7 @@ function Todos() {
     if (data) {
       setTasks(data);
     }
-  }, []);
+  },[]);
 
   // adding new lists in todos list================================================================
   const addTask = async () => {
@@ -59,12 +60,15 @@ function Todos() {
         completed: false,
       });
       tasks.push(response.data);
-      console.log(response);
+      console.log(response.data);
       setNewTask("");
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
+
+ 
+  
 
   // deleting a perticular task=================================================
 
@@ -107,9 +111,11 @@ function Todos() {
   const handleEditTask = (id, title) => {
     setEditedTaskId(id);
     setEditedTaskTitle(title);
-    setOpen(!open);
+    
   };
-  const handleSave = async (taskId) => {
+ 
+
+  const handleSave = async(taskId) => {
     try {
       const newUpdatedtask = tasks.map((task) => {
         if (task.id === taskId) {
@@ -118,19 +124,23 @@ function Todos() {
           return task;
         }
       });
-      await axios.patch(`${API_URL}/${taskId}`, {
-        title: newUpdatedtask.find((task) => task.id === taskId).title,
-      });
-
       setTasks(newUpdatedtask);
-      console.log(newUpdatedtask);
+      // Get the updated task's title
+      const updatedTaskTitle = newUpdatedtask.find((task) => task.id === taskId).title;
+  
+      // Send PATCH request with the updated task title
+      await axios.patch(`${API_URL}/${taskId}`, {
+        title: updatedTaskTitle,
+      });
+  
+     
       setEditedTaskId(null);
       setEditedTaskTitle("");
     } catch (err) {
       console.log(err);
     }
   };
-
+  
   return (
     <div className={styles.listContainer}>
       <h1>To-Do App</h1>
